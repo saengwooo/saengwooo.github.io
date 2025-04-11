@@ -6,15 +6,15 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
-// 🔹 회원 정보 불러오기
+// 회원 목록 조회
 app.get('/members', (req, res) => {
   const data = fs.readFileSync('./members.json', 'utf8');
   res.json(JSON.parse(data));
 });
 
-// 🔹 회원 정보 추가
+// 회원 추가
 app.post('/add-member', (req, res) => {
   const { id, phone } = req.body;
   if (!id || !phone) return res.status(400).send('입력값 누락');
