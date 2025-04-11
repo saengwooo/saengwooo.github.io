@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 정보 출력</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    table {
+      border-collapse: collapse;
+      width: 300px;
+      margin-top: 20px;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background-color: #f2f2f2;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📋 회원 정보</h2>
+  <button id="load-users">회원 정보 불러오기</button>
+
+  <table id="user-table" style="display: none;">
+    <thead>
+      <tr>
+        <th>아이디</th>
+        <th>전화번호</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- 데이터가 여기에 들어감 -->
+    </tbody>
+  </table>
+
+  <script>
+    $('#load-users').on('click', function() {
+      $.ajax({
+        url: 'members.json',       // 🔹 같은 디렉토리에 있는 JSON 파일
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+          const tbody = $('#user-table tbody');
+          tbody.empty();  // 기존 내용 지우기
+
+          data.forEach(member => {
+            const row = `<tr><td>${member.id}</td><td>${member.phone}</td></tr>`;
+            tbody.append(row);
+          });
+
+          $('#user-table').show(); // 표 보이게 하기
+        },
+        error: function(err) {
+          alert('회원 정보를 불러오지 못했습니다.');
+          console.log(err);
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
