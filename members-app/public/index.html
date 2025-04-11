@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>회원 정보 시스템</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    input, button { margin: 5px; padding: 5px; }
+    table { border-collapse: collapse; margin-top: 20px; width: 300px; }
+    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+    th { background-color: #eee; }
+  </style>
+</head>
+<body>
+
+  <h2>👤 회원 정보 입력</h2>
+  <input type="text" id="user-id" placeholder="아이디">
+  <input type="text" id="user-phone" placeholder="전화번호">
+  <button id="add-member">입력</button>
+
+  <br><br>
+  <button id="load-users">회원 정보 불러오기</button>
+
+  <table id="user-table" style="display: none;">
+    <thead>
+      <tr>
+        <th>아이디</th>
+        <th>전화번호</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    // 🔹 회원 추가
+    $('#add-member').on('click', function () {
+      const id = $('#user-id').val().trim();
+      const phone = $('#user-phone').val().trim();
+
+      if (!id || !phone) return alert('아이디와 전화번호를 모두 입력해주세요.');
+
+      $.ajax({
+        url: '/add-member',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ id, phone }),
+        success: function (res) {
+          alert('✅ 회원 추가 완료!');
+          $('#user-id').val('');
+          $('#user-phone').val('');
+        },
+        error: function () {
+          alert('❌ 추가 실패!');
+        }
+      });
+    });
+
+    // 🔹 회원 목록 불러오기
+    $('#load-users').on('click', function () {
+      $.ajax({
+        url: '/members',
+        method: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          const tbody = $('#user-table tbody');
+          tbody.empty();
+          data.forEach(member => {
+            const row = `<tr><td>${member.id}</td><td>${member.phone}</td></tr>`;
+            tbody.append(row);
+          });
+          $('#user-table').show();
+        },
+        error: function () {
+          alert('회원 정보를 불러오지 못했습니다.');
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
